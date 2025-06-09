@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>独立开发者出海导航</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 0;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2rem;
+            font-weight: 300;
+        }
+
+        .nav-section {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .link-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border: 1px solid #e1e8ed;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .link-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-color: #3498db;
+        }
+
+        .link-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(45deg, #3498db, #2ecc71);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .link-item:hover::before {
+            opacity: 1;
+        }
+
+        .link-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .link-url {
+            color: #3498db;
+            text-decoration: none;
+            font-size: 0.9rem;
+            word-break: break-all;
+            display: block;
+            margin-top: 5px;
+        }
+
+        .link-url:hover {
+            text-decoration: underline;
+        }
+
+        .search-container {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .search-box {
+            width: 100%;
+            max-width: 500px;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            outline: none;
+            background: rgba(255,255,255,0.95);
+        }
+
+        .search-box:focus {
+            box-shadow: 0 4px 20px rgba(52,152,219,0.3);
+        }
+
+        .tag {
+            display: inline-block;
+            background: #ecf0f1;
+            color: #34495e;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin: 2px;
+        }
+
+        .articles-list {
+            list-style: none;
+        }
+
+        .article-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-left: 4px solid #e74c3c;
+            transition: all 0.3s ease;
+        }
+
+        .article-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+
+        .article-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .article-date {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .article-link {
+            color: #e74c3c;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .article-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .nav-section {
+                padding: 20px;
+            }
+            
+            .links-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 0;
+            color: rgba(255,255,255,0.8);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 独立开发者出海导航</h1>
+            <p>精选工具资源 · 助力出海成功</p>
+        </div>
+
+        <div class="search-container">
+            <input type="text" class="search-box" placeholder="搜索工具或资源..." id="searchBox">
+        </div>
+
+        <div class="nav-section" id="research">
+            <h2 class="section-title">📊 需求收集和关键词调研</h2>
+            <div class="links-grid">
+                <div class="link-item">
+                    <div class="link-title">谷歌下拉词</div>
+                    <a href="https://www.searchsuggest.tips/?keyword=" class="link-url" target="_blank">searchsuggest.tips</a>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">Toolify 榜单</div>
+                    <a href="https://www.toolify.ai/Best-Al-Tools-revenue" class="link-url" target="_blank">toolify.ai</a>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">AI导航站的需求列表</div>
+                    <a href="https://theresanaiforthat.com/requests" class="link-url" target="_blank">theresanaiforthat.com</a>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">关键词难度</div>
+                    <a href="https://ahrefs.com/keyword-difficulty" class="link-url" target="_blank">ahrefs.com</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-section" id="essentials">
+            <h2 class="section-title">🛠️ 上站必备</h2>
+            <div class="links-grid">
+                <div class="link-item">
+                    <div class="link-title">域名查询</div>
+                    <a href="https://leandomainsearch.com" class="link-url" target="_blank">leandomainsearch.com</a><br>
+                    <a href="https://query.domains/" class="link-url" target="_blank">query.domains</a><br>
+                    <a href="https://instantdomainsearch.com" class="link-url" target="_blank">instantdomainsearch.com</a>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">域名注册</div>
+                    <a href="https://spaceship.com" class="link-url" target="_blank">spaceship.com</a><br>
+                    <a href="https://porkbun.com" class="link-url" target="_blank">porkbun.com</a><br>
+                    <a href="https://namecheap.com" class="link-url" target="_blank">namecheap.com</a>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">代码&网站托管</div>
+                    <a href="https://github.com" class="link-url" target="_blank">github.com</a><br>
+                    <a href="https://cloudflare.com" class="link-url" target="_blank">cloudflare.com</a><br>
+                    <a href="https://vercel.com" class="link-url" target="_blank">vercel.com</a>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">数据后台</div>
+                    <a href="https://search.google.com/search-console/welcome" class="link-url" target="_blank">Google Search Console</a><br>
+                    <a href="https://analytics.google.com" class="link-url" target="_blank">Google Analytics</a><br>
+                    <a href="https://www.bing.com/webmasters/submiturl" class="link-url" target="_blank">Bing Webmaster</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-section" id="competitor">
+            <h2 class="section-title">🔍 竞品调研</h2>
+            <div class="links-grid">
+                <div class="link-item">
+                    <div class="link-title">查看流量和网页关键词</div>
+                    <a href="https://aitdk.com" class="link-url" target="_blank">aitdk.com</a>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">查看外链</div>
+                    <a href="https://ahrefs.com/free-seo-tools" class="link-url" target="_blank">ahrefs.com/free-seo-tools</a>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">查看网站关键词</div>
+                    <a href="https://semrush.com" class="link-url" target="_blank">semrush.com</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-section" id="templates">
+            <h2 class="section-title">📝 开源模板</h2>
+            <div class="links-grid">
+                <div class="link-item">
+                    <div class="link-title">Rin - 动态博客</div>
+                    <span class="tag">Cloudflare Pages</span>
+                    <a href="https://github.com/openRin/Rin" class="link-url" target="_blank">github.com/openRin/Rin</a>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">Next.js Boilerplate</div>
+                    <span class="tag">Next.js 15</span>
+                    <a href="https://github.com/ixartz/Next-js-Boilerplate" class="link-url" target="_blank">github.com/ixartz/Next-js-Boilerplate</a>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">SaaS Boilerplate</div>
+                    <span class="tag">Next.js</span> <span class="tag">TypeScript</span>
+                    <a href="https://github.com/ixartz/SaaS-Boilerplate" class="link-url" target="_blank">github.com/ixartz/SaaS-Boilerplate</a>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">Next.js Landing Page</div>
+                    <span class="tag">免费模板</span>
+                    <a href="https://github.com/ixartz/Next-JS-Landing-Page-Starter-Template" class="link-url" target="_blank">github.com/ixartz/Next-JS-Landing-Page-Starter-Template</a>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">Astro Boilerplate</div>
+                    <span class="tag">博客</span> <span class="tag">作品集</span>
+                    <a href="https://github.com/ixartz/Astro-boilerplate" class="link-url" target="_blank">github.com/ixartz/Astro-boilerplate</a>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">Landing Page Boilerplate</div>
+                    <span class="tag">营销页面</span>
+                    <a href="https://github.com/weijunext/landing-page-boilerplate" class="link-url" target="_blank">github.com/weijunext/landing-page-boilerplate</a>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">Open SaaS</div>
+                    <span class="tag">React</span> <span class="tag">Node.js</span>
+                    <a href="https://github.com/wasp-lang/open-saas/" class="link-url" target="_blank">github.com/wasp-lang/open-saas</a>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">SaaSfly</div>
+                    <span class="tag">魔法之旅</span>
+                    <a href="https://github.com/saasfly/saasfly" class="link-url" target="_blank">github.com/saasfly/saasfly</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-section" id="nav-templates">
+            <h2 class="section-title">🧭 导航站模板</h2>
+            <div class="links-grid">
+                <div class="link-item">
+                    <div class="link-title">FRE123 导航</div>
+                    <span class="tag">一键搭建</span>
+                    <a href="https://github.com/fre123-com/fre123-nav/" class="link-url" target="_blank">github.com/fre123-com/fre123-nav</a>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">WebStack 导航</div>
+                    <span class="tag">静态响应式</span>
+                    <a href="https://github.com/WebStackPage/WebStackPage.github.io" class="link-url" target="_blank">github.com/WebStackPage/WebStackPage.github.io</a>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">Tap4 AI 导航</div>
+                    <span class="tag">AI工具</span>
+                    <a href="https://github.com/6677-ai/tap4-ai-webui" class="link-url" target="_blank">github.com/6677-ai/tap4-ai-webui</a>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">GPTs Works</div>
+                    <span class="tag">GPTs商店</span>
+                    <a href="https://github.com/all-in-aigc/gpts-works" class="link-url" target="_blank">github.com/all-in-aigc/gpts-works</a>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">Vercel 模板中心</div>
+                    <span class="tag">官方模板</span>
+                    <a href="https://vercel.com/templates" class="link-url" target="_blank">vercel.com/templates</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-section" id="news">
+            <h2 class="section-title">📰 资讯部分</h2>
+            <div class="links-grid">
+                <div class="link-item">
+                    <div class="link-title">Reddit 子社区</div>
+                    <a href="https://liberating-doll-b8a.notion.site/Reddit-1a8e8aed91b18021839ecba8b74e530b" class="link-url" target="_blank">notion.site</a>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">Google SEO 基础知识</div>
+                    <a href="https://developers.google.com/search/docs/fundamentals/creating-helpfulcontent?hl=zh-cn" class="link-url" target="_blank">developers.google.com</a>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">Ahrefs 趋势网站</div>
+                    <a href="https://ahrefs.com/websites#trending" class="link-url" target="_blank">ahrefs.com/websites</a>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">500 MRR</div>
+                    <span class="tag">月收入$500+</span>
+                    <a href="https://www.500mrr.com/" class="link-url" target="_blank">500mrr.com</a>
+                </div>
+                <div class="link-item">
+                    <div class="link-title">Hacker News</div>
+                    <span class="tag">副业项目</span>
+                    <a href="https://news.ycombinator.com/item?id=42373343" class="link-url" target="_blank">news.ycombinator.com</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="nav-section" id="articles">
+            <h2 class="section-title">💎 生财精华帖</h2>
+            <ul class="articles-list">
+                <li class="article-item">
+                    <div class="article-title">不要轻易称自己为独立开发者</div>
+                    <div class="article-date">2025/3/1</div>
+                    <a href="https://scys.com/articleDetail/xq_topic/1525814845844482" class="article-link" target="_blank">查看详情</a>
+                </li>
+                <li class="article-item">
+                    <div class="article-title">AI 编程赛道第一课: Build a business, not an App</div>
+                    <div class="article-date">2025-02-06</div>
+                    <a href="https://scys.com/articleDetail/xq_topic/2858151258225521" class="article-link" target="_blank">查看详情</a>
+                </li>
+                <li class="article-item">
+                    <div class="article-title">只靠想法就能赚钱的时代到来了!</div>
+                    <div class="article-date">2024-11-13</div>
+                    <a href="https://scys.com/articleDetail/xq_topic/4848511545851418" class="article-link" target="_blank">查看详情</a>
+                </li>
+                <li class="article-item">
+                    <div class="article-title">翻石头，是独立开发者的日常修行。</div>
+                    <div class="article-date">2024-11-05</div>
+                    <a href="https://scys.com/articleDetail/xq_topic/5121548228815414" class="article-link" target="_blank">查看详情</a>
+                </li>
+                <li class="article-item">
+                    <div class="article-title">用AI 自学编程的最好时机到来了</div>
+                    <div class="article-date">2024-07-23</div>
+                    <a href="https://scys.com/articleDetail/xq_topic/5122484888125484" class="article-link" target="_blank">查看详情</a>
+                </li>
+                <li class="article-item">
+                    <div class="article-title">善用黑科技工具，做十倍速全栈程序员</div>
+                    <div class="article-date">2023-08-20</div>
+                    <a href="https://scys.com/articleDetail/xq_topic/188545124485142" class="article-link" target="_blank">查看详情</a>
+                </li>
+                <li class="article-item">
+                    <div class="article-title">什么产品好做? 三个一</div>
+                    <div class="article-date">2023-12-07</div>
+                    <a href="https://scys.com/articleDetail/xq_topic/811452228445512" class="article-link" target="_blank">查看详情</a>
+                </li>
+                <li class="article-item">
+                    <div class="article-title">写给独立开发者:如何快速做出产品 MVP</div>
+                    <div class="article-date">2023-02-09</div>
+                    <a href="https://scys.com/articleDetail/xq_topic/814822455488822" class="article-link" target="_blank">查看详情</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            <p>🌟 独立开发者出海导航 | 精选优质资源，助力成功出海</p>
+        </div>
+    </div>
+
+    <script>
+        // 搜索功能
+        const searchBox = document.getElementById('searchBox');
+        const allSections = document.querySelectorAll('.nav-section');
+        const allItems = document.querySelectorAll('.link-item, .article-item');
+
+        searchBox.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            if (searchTerm === '') {
+                // 显示所有内容
+                allSections.forEach(section => {
+                    section.style.display = 'block';
+                });
+                allItems.forEach(item => {
+                    item.style.display = 'block';
+                });
+                return;
+            }
+
+            // 搜索逻辑
+            allItems.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(searchTerm)) {
+                    item.style.display = 'block';
+                    // 显示包含匹配项的section
+                    const parentSection = item.closest('.nav-section');
+                    if (parentSection) {
+                        parentSection.style.display = 'block';
+                    }
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // 隐藏没有匹配项的section
+            allSections.forEach(section => {
+                const visibleItems = section.querySelectorAll('.link-item:not([style*="display: none"]), .article-item:not([style*="display: none"])');
+                if (visibleItems.length === 0) {
+                    section.style.display = 'none';
+                } else {
+                    section.style.display = 'block';
+                }
+            });
+        });
+
+        // 平滑滚动到锚点
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 添加动画效果
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        });
+
+        document.querySelectorAll('.nav-section').forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
